@@ -1,10 +1,11 @@
 import type { GenericEvent } from "@polkadot/types";
 
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import config from "../config.ts";
-import { EventEmitter } from "node:events";
-import { Codec } from "@polkadot/types/types";
+
+import { ApiPromise, WsProvider } from "@polkadot/api";
 import { AddressOrPair } from "@polkadot/api/types";
+import { Codec } from "@polkadot/types/types";
+import { EventEmitter } from "node:events";
 
 declare interface SubstrateApi {
   on(event: "event", listener: (event: GenericEvent) => void): this;

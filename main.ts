@@ -1,8 +1,10 @@
+import type { PalletReferendaReferendumInfoConvictionVotingTally } from "./lib/types.ts";
+
+import { marked } from "marked";
+
 import { MatrixBot } from "./lib/bot-client.ts";
 import { SubstrateApi } from "./lib/substrate-api.ts";
-import { PalletReferendaReferendumInfoConvictionVotingTally } from "./lib/types.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
-import { marked } from "marked";
 
 const collectives = new SubstrateApi();
 await collectives.connect();

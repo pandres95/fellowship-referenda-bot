@@ -1,29 +1,7 @@
-import { resolve } from "node:url";
-import config from "../config.ts";
+import type { SubsquareReferendumDetail } from "./types.ts";
 
-export type SubsquareReferendumDetail = {
-  _id: string;
-  referendumIndex: number;
-  proposer: string;
-  title: string;
-  content: string;
-  contentType: "markdown" | "html";
-  track: number;
-  createdAt: string;
-  updatedAt: string;
-  lastActivityAt: string;
-  contentSummary: {
-    postUpdatedAt: string;
-    summary: string;
-  };
-  commentsCount: number;
-  author: {
-    username: string;
-    publicKey: string;
-    address: string;
-  };
-  authors: string[];
-};
+import config from "../config.ts";
+import { resolve } from "node:url";
 
 export class SubsquareApi {
   baseUrl: URL;

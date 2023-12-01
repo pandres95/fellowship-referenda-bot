@@ -50,39 +50,36 @@ const activeReferenda = referenda
   }));
 
 const messages = await Promise.all(
-  activeReferenda.map(async ({ id, value }) => {
-    const subsquareDetails = await subsquare.referendum(id);
+  activeReferenda.map(async ({ id, value: { tally } }) => {
+    const { title, content, commentsCount } = await subsquare.referendum(id);
 
-    return `<tr>
-        <td>${id}</td>
-        <td><a href="https://collectives.subsquare.io/fellowship/referenda/${id}">${
-      subsquareDetails.title
-    }</a></td>
-        <td>${marked.parse(subsquareDetails.content)}</td>
-        <td>${value.tally.ayes} (${value.tally.bareAyes})</td>
-        <td>${value.tally.nays}</td>
-        <td>${subsquareDetails.commentsCount}</td>
-      </tr>`;
+    const article = `
+##### ${id}: ${title}
+
+🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
+
+${content
+  .split("\n")
+  .map((l) => `> ${l}`)
+  .join("\n")}
+
+**${tally.ayes} (${tally.bareAyes})** 👍 | **${
+      tally.nays
+    }** 👎 | **${commentsCount}** 💬
+    `;
+
+    return `<article>
+      ${marked.parse(article)}
+    </article>`;
   })
 );
 
 await bot.send(`
 <html>
   <body>
-    <h1>Active Referenda</h1>
-    <table>
-      <theader>
-        <th>#</th>
-        <th>Title</th>
-        <th>Content</th>
-        <th>👍</th>
-        <th>👎</th>
-        <th>💬</th>
-      </theader>
-      <tbody>
-        ${messages.join("\n")}
-      </tbody>
-    </table>
+    <h3>🗳️ Active Referenda</h3>
+    
+    ${messages.join("\n")}
   </body>
 </html>
 `);

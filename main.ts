@@ -66,8 +66,6 @@ const messages = await Promise.all(
   })
 );
 
-console.log(messages);
-
 await bot.send(`
 <html>
   <body>

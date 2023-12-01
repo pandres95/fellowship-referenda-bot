@@ -25,15 +25,11 @@ export class MatrixBot {
     username = config.matrix.username!,
     password = config.matrix.password!
   ) {
-    console.log(this.auth, username, password);
-
     this.client = await this.auth.passwordLogin(username, password);
     await this.client.start();
   }
 
   async send(html: string) {
-    console.log(this.roomId);
-
     await this.client?.sendHtmlNotice(this.roomId, html);
   }
 }

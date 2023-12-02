@@ -1,5 +1,6 @@
 import config from "../config.ts";
 import { MatrixClient, MatrixAuth } from "matrix-bot-sdk";
+import { marked } from "marked";
 
 export class MatrixBot {
   private auth: MatrixAuth;
@@ -29,7 +30,7 @@ export class MatrixBot {
     await this.client.start();
   }
 
-  async send(html: string) {
-    await this.client?.sendHtmlNotice(this.roomId, html);
+  async send(body: string) {
+    await this.client?.sendHtmlText(this.roomId, await marked.parse(body));
   }
 }

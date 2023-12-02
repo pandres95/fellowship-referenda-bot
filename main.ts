@@ -1,7 +1,5 @@
 import type { PalletReferendaReferendumInfoConvictionVotingTally } from "./lib/types.ts";
 
-import { marked } from "marked";
-
 import { MatrixBot } from "./lib/bot-client.ts";
 import { SubstrateApi } from "./lib/substrate-api.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
@@ -53,8 +51,8 @@ const messages = await Promise.all(
   activeReferenda.map(async ({ id, value: { tally } }) => {
     const { title, content, commentsCount } = await subsquare.referendum(id);
 
-    const article = `
-##### ${id}: ${title}
+    return `
+#### ${id}: ${title}
 
 🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
 
@@ -67,19 +65,11 @@ ${content
       tally.nays
     }** 👎 | **${commentsCount}** 💬
     `;
-
-    return `<article>
-      ${marked.parse(article)}
-    </article>`;
   })
 );
 
 await bot.send(`
-<html>
-  <body>
-    <h3>🗳️ Active Referenda</h3>
+### 🗳️ Active Referenda
     
-    ${messages.join("\n")}
-  </body>
-</html>
+${messages.join("\n")}
 `);

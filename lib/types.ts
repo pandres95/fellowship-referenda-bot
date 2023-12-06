@@ -4,6 +4,12 @@ export interface PalletReferendaReferendumInfoConvictionVotingTally
   extends Codec {
   ongoing: {
     track: number;
+    proposal: {
+      lookup: {
+        hash: string;
+        len: number;
+      };
+    };
     origin: { fellowshipOrigins: string };
     submitted: number;
     submissionDepost: {

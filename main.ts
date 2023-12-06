@@ -1,8 +1,16 @@
 import type { PalletReferendaReferendumInfoConvictionVotingTally } from "./lib/types.ts";
+import type { SubmittableExtrinsic } from "@polkadot/api/types";
 
 import { MatrixBot } from "./lib/bot-client.ts";
 import { SubstrateApi } from "./lib/substrate-api.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
+import {
+  GenericCall,
+  GenericExtrinsicPayload,
+  Option,
+  Vec,
+  u8,
+} from "@polkadot/types";
 
 const collectives = new SubstrateApi();
 await collectives.connect();
@@ -44,10 +52,42 @@ const activeReferenda = referenda
   }));
 
 const messages = await Promise.all(
-  activeReferenda.map(async ({ id, value: { tally } }) => {
+  activeReferenda.map(async ({ id, value: { tally, proposal } }) => {
     const { title, content, commentsCount } = await subsquare.referendum(id);
 
-    return `
+    const hash = proposal.lookup.hash;
+
+    let len: number;
+    if (proposal.lookup.len === 0) {
+      const preimageStatus = await collectives.query(
+        "preimage/statusFor",
+        hash
+      );
+      len = (
+        preimageStatus.toJSON().valueOf() as { unrequested: { len: number } }
+      ).unrequested.len;
+    } else {
+      len = proposal.lookup.len;
+    }
+
+    const maybePreimage: Option<Vec<u8>> = await collectives.query(
+      "preimage/preimageFor",
+      [hash, len]
+    );
+
+    let maybeExtrinsic: GenericCall | undefined;
+    if (maybePreimage.isSome) {
+      const preimage = maybePreimage.unwrap();
+      try {
+        maybeExtrinsic = await collectives.decodeCall(preimage.toString());
+      } catch {}
+    }
+
+    if (
+      maybeExtrinsic?.method === "remark" &&
+      maybeExtrinsic.args.at(0).toHuman().toString().includes("RFC")
+    ) {
+      return `
 #### ${id}: ${title}
 
 🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
@@ -58,17 +98,26 @@ ${content
   .join("\n")}
 
 **${tally.ayes} (${tally.bareAyes})** 👍 | **${
-      tally.nays
-    }** 👎 | **${commentsCount}** 💬
+        tally.nays
+      }** 👎 | **${commentsCount}** 💬
     `;
-  })
-);
+    }
 
-await bot.send(`
-### 🗳️ Active Referenda
+    return "";
+  })
+).then((messages) => messages.filter((m) => m.length));
+
+const content = `
+### 🗳️ Active Referenda (RFCs)
     
 ${messages.join("\n")}
-`);
+`;
+
+if (process.env.NODE_ENV === "production") {
+  await bot.send(content);
+} else {
+  console.log(content);
+}
 
 await collectives.disconnect();
 await bot.disconnect();

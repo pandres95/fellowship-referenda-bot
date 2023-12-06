@@ -27,6 +27,11 @@ class SubstrateApi extends EventEmitter {
     });
   }
 
+  async disconnect() {
+    await this.#api.disconnect();
+    await this.#provider.disconnect();
+  }
+
   async query<R extends Codec>(path: string, ...params: unknown[]): Promise<R> {
     let [pallet, key] = path.split("/");
     return this.#api.query[pallet][key](...params) as Promise<R>;

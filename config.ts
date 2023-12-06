@@ -21,7 +21,7 @@ export default {
   subsquare: {
     host: process.env.SUBSQUARE_HOST ?? "subsquare.io",
     chain: process.env.SUBSQUARE_CHAIN ?? "collectives",
-    versionHash: process.env.SUBSQUARE_VERSION_HASH,
+    buildHash: process.env.SUBSQUARE_BUILD_HASH ?? "ykyG4EH1SIzFi-6ggnyvH",
     path: process.env.SUBSQUARE_PATH ?? "fellowship",
   },
 };

@@ -9,12 +9,10 @@ export class SubsquareApi {
   constructor(
     host = config.subsquare.host,
     chain = config.subsquare.chain,
-    versionHash = config.subsquare.versionHash,
+    buildHash = config.subsquare.buildHash,
     private path = config.subsquare.path
   ) {
-    this.baseUrl = new URL(
-      `https://${chain}.${host}/_next/data/${versionHash}/`
-    );
+    this.baseUrl = new URL(`https://${chain}.${host}/_next/data/${buildHash}/`);
   }
 
   async referendum(id: number) {

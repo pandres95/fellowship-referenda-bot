@@ -12,10 +12,6 @@ await bot.connect();
 
 const subsquare = new SubsquareApi();
 
-collectives.listenEvents().on("event", (event) => {
-  console.log(event.toHuman());
-});
-
 const referendumCount: number = (
   await collectives.query("fellowshipReferenda/referendumCount")
 ).toPrimitive() as number;
@@ -73,3 +69,6 @@ await bot.send(`
     
 ${messages.join("\n")}
 `);
+
+await collectives.disconnect();
+await bot.disconnect();

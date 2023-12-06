@@ -1,5 +1,10 @@
 import config from "../config.ts";
-import { MatrixClient, MatrixAuth } from "matrix-bot-sdk";
+import {
+  MatrixClient,
+  MatrixAuth,
+  SimpleFsStorageProvider,
+  RustSdkCryptoStorageProvider,
+} from "matrix-bot-sdk";
 import { marked } from "marked";
 
 export class MatrixBot {
@@ -14,7 +19,8 @@ export class MatrixBot {
    */
   constructor(
     homeserverUrl = config.matrix.homeserverUrl,
-    private roomId = config.matrix.roomId!
+    private roomId = config.matrix.roomId!,
+    private paths = config.matrix.paths
   ) {
     this.auth = new MatrixAuth(homeserverUrl);
   }
@@ -26,8 +32,22 @@ export class MatrixBot {
     username = config.matrix.username!,
     password = config.matrix.password!
   ) {
-    this.client = await this.auth.passwordLogin(username, password);
+    const client = await this.auth.passwordLogin(username, password);
+
+    const storageProvider = new SimpleFsStorageProvider(this.paths.storage);
+    const cryptoProvider = new RustSdkCryptoStorageProvider(this.paths.crypto);
+    this.client = new MatrixClient(
+      client.homeserverUrl,
+      client.accessToken,
+      storageProvider,
+      cryptoProvider
+    );
+
     await this.client.start();
+  }
+
+  disconnect() {
+    this.client.stop();
   }
 
   async send(body: string) {

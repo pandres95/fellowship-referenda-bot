@@ -7,6 +7,12 @@ export default {
     password: process.env.MATRIX_PASSWORD,
 
     roomId: process.env.MATRIX_ROOMID,
+
+    paths: {
+      storage:
+        process.env.MATRIX_STORAGE_PROVIDER_PATH ?? "./.matrix/storage.json",
+      crypto: process.env.MATRIX_CRYPTO_PROVIDER_PATH ?? "./.matrix/crypto",
+    },
   },
   substrate: {
     endpointUrl: process.env.SUBSTRATE_ENDPOINT_URL,

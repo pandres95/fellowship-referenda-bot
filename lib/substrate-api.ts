@@ -27,6 +27,11 @@ class SubstrateApi extends EventEmitter {
     });
   }
 
+  async decodeCall(extrinsic: string | Uint8Array) {
+    return this.#api.createType("Call", extrinsic);
+    // return this.#api.tx(extrinsic);
+  }
+
   async disconnect() {
     await this.#api.disconnect();
     await this.#provider.disconnect();

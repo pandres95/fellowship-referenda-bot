@@ -9,6 +9,7 @@
     "test": "test"
   },
   "scripts": {
+    "start": "node --loader ts-node/esm --env-file=.env -- main.ts",
     "dev": "node --loader ts-node/esm --watch --env-file=.env -- main.ts"
   },
   "keywords": [],

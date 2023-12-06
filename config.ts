@@ -24,4 +24,7 @@ export default {
     buildHash: process.env.SUBSQUARE_BUILD_HASH ?? "ykyG4EH1SIzFi-6ggnyvH",
     path: process.env.SUBSQUARE_PATH ?? "fellowship",
   },
+  storage: {
+    path: process.env.STORAGE_PATH ?? "./.storage.json",
+  },
 };

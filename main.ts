@@ -1,16 +1,10 @@
 import type { PalletReferendaReferendumInfoConvictionVotingTally } from "./lib/types.ts";
-import type { SubmittableExtrinsic } from "@polkadot/api/types";
 
 import { MatrixBot } from "./lib/bot-client.ts";
 import { SubstrateApi } from "./lib/substrate-api.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
-import {
-  GenericCall,
-  GenericExtrinsicPayload,
-  Option,
-  Vec,
-  u8,
-} from "@polkadot/types";
+import { GenericCall, Option, Vec, u8 } from "@polkadot/types";
+import { StorageHandler } from "./lib/storage.ts";
 
 const collectives = new SubstrateApi();
 await collectives.connect();
@@ -20,16 +14,28 @@ await bot.connect();
 
 const subsquare = new SubsquareApi();
 
+const storage = new StorageHandler();
+await storage.load();
+
 const referendumCount: number = (
   await collectives.query("fellowshipReferenda/referendumCount")
 ).toPrimitive() as number;
 
 console.time("Fetching active referenda...");
+
+const earliestActiveReferendum: number =
+  storage.get("earliestActiveReferendum") ?? 0;
+
 const referenda = await Promise.all(
-  new Array(referendumCount).fill(0).map(async (_, i) => ({
-    id: i,
-    value: await collectives.query("fellowshipReferenda/referendumInfoFor", i),
-  }))
+  new Array(referendumCount - earliestActiveReferendum)
+    .fill(0)
+    .map(async (_, i) => ({
+      id: earliestActiveReferendum + i,
+      value: await collectives.query(
+        "fellowshipReferenda/referendumInfoFor",
+        earliestActiveReferendum + i
+      ),
+    }))
 );
 console.timeEnd("Fetching active referenda...");
 
@@ -50,6 +56,8 @@ const activeReferenda = referenda
         .valueOf() as PalletReferendaReferendumInfoConvictionVotingTally
     ).ongoing,
   }));
+
+await storage.set("earliestActiveReferendum", activeReferenda?.[0]?.id ?? 0);
 
 const messages = await Promise.all(
   activeReferenda.map(async ({ id, value: { tally, proposal } }) => {

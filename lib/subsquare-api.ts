@@ -6,25 +6,17 @@ import { resolve } from "node:url";
 export class SubsquareApi {
   baseUrl: URL;
 
-  constructor(
-    host = config.subsquare.host,
-    chain = config.subsquare.chain,
-    buildHash = config.subsquare.buildHash,
-    private path = config.subsquare.path
-  ) {
-    this.baseUrl = new URL(`https://${chain}.${host}/_next/data/${buildHash}/`);
+  constructor(host = config.subsquare.host, chain = config.subsquare.chain) {
+    this.baseUrl = new URL(`https://${chain}.${host}/api/`);
   }
 
-  async referendum(id: number) {
+  async fellowshipReferendumById(id: number) {
     const path = resolve(
       this.baseUrl.toString(),
-      `${this.path}/referenda/${id}.json`
+      `fellowship/referenda/${id}.json`
     );
-    const response = await fetch(path);
-    const data = (await response.json()) as {
-      pageProps: { detail: SubsquareReferendumDetail };
-    };
 
-    return data.pageProps.detail;
+    const response = await fetch(path);
+    return response.json() as Promise<SubsquareReferendumDetail>;
   }
 }

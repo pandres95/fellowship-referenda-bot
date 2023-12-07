@@ -61,7 +61,8 @@ await storage.set("earliestActiveReferendum", activeReferenda?.[0]?.id ?? 0);
 
 const messages = await Promise.all(
   activeReferenda.map(async ({ id, value: { tally, proposal } }) => {
-    const { title, content, commentsCount } = await subsquare.referendum(id);
+    const { title, content, commentsCount } =
+      await subsquare.fellowshipReferendumById(id);
 
     const hash = proposal.lookup.hash;
 

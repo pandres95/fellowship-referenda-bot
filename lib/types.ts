@@ -1,32 +1,56 @@
+import { AccountId, Tally } from "@polkadot/types/interfaces";
 import { Codec } from "@polkadot/types/types";
 
-export interface PalletReferendaReferendumInfoConvictionVotingTally
-  extends Codec {
-  ongoing: {
-    track: number;
-    proposal: {
-      lookup: {
-        hash: string;
-        len: number;
-      };
-    };
-    origin: { fellowshipOrigins: string };
-    submitted: number;
-    submissionDepost: {
-      who: string;
-      amount: number;
-    };
-    decisionDeposit: {
-      who: string;
-      amount: number;
-    };
-    deciding: { since: number; confirming: number | null };
-    tally: {
-      ayes: number;
-      bareAyes: number;
-      nays: number;
-    };
+export interface FellowshipReferendumInfo extends Codec {
+  ongoing: FellowshipReferendumStatus;
+}
+
+export interface FellowshipReferendumOrigin {
+  fellowshipOrigins: string;
+}
+
+export interface FellowshipReferendumCall {
+  lookup: {
+    hash: string;
+    len: number;
   };
+}
+
+export type FellowshipReferendumStatus = ReferendumStatus<
+  number,
+  FellowshipReferendumOrigin,
+  number,
+  FellowshipReferendumCall,
+  number
+>;
+
+export interface ReferendumStatus<
+  TrackId,
+  RuntimeOrigin,
+  Moment,
+  Call,
+  Balance,
+  Tally = ReferendumTally,
+  AccountId = string
+> {
+  track: TrackId;
+  origin: RuntimeOrigin;
+  proposal: Call;
+  submitted: Moment;
+  submissionDepost: Deposit<AccountId, Balance>;
+  decisionDeposit: Deposit<AccountId, Balance>;
+  tally: Tally;
+}
+
+export interface Deposit<AccountId, Balance> {
+  who: AccountId;
+  amount: Balance;
+}
+
+export interface ReferendumTally {
+  ayes: number;
+  bareAyes: number;
+  nays: number;
 }
 
 export type SubsquareReferendumDetail = {

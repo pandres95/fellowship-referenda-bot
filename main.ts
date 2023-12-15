@@ -49,8 +49,7 @@ const messages = await Promise.all(
     const { title, content, commentsCount } =
       await subsquare.fellowshipReferendumById(id);
 
-    return `
-#### ${id}: ${title}
+    return `#### ${id}: ${title}
 
 🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
 
@@ -66,11 +65,16 @@ ${content
   })
 );
 
-const content = `
+let content: string;
+if (activeRfcReferenda.length) {
+  content = `
 ### 🗳️ Active Referenda (RFCs)
-    
+
 ${messages.join("\n")}
 `;
+} else {
+  content = "No active referenda (RFCs) for now";
+}
 
 if (process.env.NODE_ENV === "production") {
   await bot.send(content);

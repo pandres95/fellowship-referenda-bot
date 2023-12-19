@@ -31,7 +31,8 @@ const activeRfcReferenda = await Promise.all(
     const maybeExtrinsic = await getMaybeReferendumCall(collectives, value);
 
     const isRfcReferendum =
-      maybeExtrinsic?.method === "remark" &&
+      (maybeExtrinsic?.method === "remark" ||
+        maybeExtrinsic?.method === "remarkWithEvent") &&
       maybeExtrinsic.args.at(0).toHuman().toString().includes("RFC");
 
     return {

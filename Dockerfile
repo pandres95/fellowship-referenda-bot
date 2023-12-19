@@ -11,5 +11,8 @@ RUN npm install
 
 COPY . .
 
+# This is to comply with file enforcement from node process
+RUN touch .env
+
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["npm", "start"]

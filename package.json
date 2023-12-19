@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node --loader ts-node/esm --env-file=.env -- main.ts",
+    "start:docker": "NODE_ENV=production node --env-file=.env -- main.ts",
     "dev": "node --loader ts-node/esm --watch --env-file=.env -- main.ts"
   },
   "keywords": [],

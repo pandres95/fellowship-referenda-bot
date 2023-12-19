@@ -4,6 +4,10 @@
 
 This bot aims to publish a digest of the active referenda in the announcements channel of Polkadot Fellowswhip (and works with similar referenda-like systems).
 
+[Join here](https://matrix.to/#/#fellowship-rfcs:bloque.team)
+
+
+
 ## Usage
 
 1. Setup the environment

@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM node:21-alpine
+FROM node:21
 
 RUN mkdir -p /usr/src/app
 
@@ -15,4 +15,4 @@ COPY . .
 RUN touch .env
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["npm", "--prefix", "/usr/src/app", "run", "start:docker"]

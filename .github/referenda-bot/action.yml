@@ -1,0 +1,73 @@
+# action.yml
+name: "Fellowship Referenda Bot"
+description: "Send messages with current referenda"
+author: Pablo Andrés Dorado Suárez <hola@pablodorado.com>
+
+inputs:
+  matrix-homeserver:
+    description: "Matrix homeserver URL"
+    required: false
+    default: "https://matrix.org"
+  matrix-accessToken:
+    description: "Matrix bot access token"
+    required: false
+  matrix-username:
+    description: "Matrix bot username"
+    required: true
+  matrix-password:
+    description: "Matrix bot password"
+    required: true
+  matrix-roomId:
+    description: "Room ID the Matrix bot will connect to"
+    required: true
+  matrix-path-state:
+    description: "Path where the state for the bot will be stored"
+    required: false
+    default: "./.matrix/state.json"
+  matrix-path-crypto:
+    description: "Path where the crypto provider for the bot will be stored"
+    required: false
+    default: "./.matrix/crypto"
+
+  substrate-endpointUrl:
+    description: "Endpoint URL for the where to WSS connect to the API Provider"
+    required: false
+    default: "wss://polkadot-collectives-rpc.polkadot.io/"
+  substrate-referendaPallet:
+    description: "Module name for the referenda pallet to query at"
+    required: false
+    default: "referenda"
+
+  subsquare-host:
+    description: "Subsquare API hostname"
+    required: false
+    default: "subsquare.io"
+  subsquare-chain:
+    description: "Chain to connect using Subsquare API to fetch information"
+    required: false
+    default: "collectives"
+
+  storage-path:
+    description: "Path to store the bot state and settings"
+    required: false
+    default: "./.storage.json"
+
+runs:
+  using: "docker"
+  image: "../../Dockerfile"
+  env:
+    MATRIX_HOMESERVER: ${{ inputs.matrix-homeserver }}
+    MATRIX_AUTHTOKEN: ${{ inputs.matrix-accessToken }}
+    MATRIX_USERNAME: ${{ inputs.matrix-username }}
+    MATRIX_PASSWORD: ${{ inputs.matrix-password }}
+    MATRIX_ROOMID: ${{ inputs.matrix-roomId }}
+    MATRIX_STATE_PROVIDER_PATH: ${{ inputs.matrix-path-state }}
+    MATRIX_CRYPTO_PROVIDER_PATH: ${{ inputs.matrix-path-crypto }}
+
+    SUBSTRATE_ENDPOINT_URL: ${{ inputs.substrate-endpointUrl }}
+    SUBSTRATE_REFERENDA_PALLET: ${{ inputs.substrate-referendaPallet }}
+
+    SUBSQUARE_HOST: ${{ inputs.subsquare-host }}
+    SUBSQUARE_CHAIN: ${{ inputs.subsquare-chain }}
+
+    STORAGE_PATH: ${{ inputs.storage-path }}

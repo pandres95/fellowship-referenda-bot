@@ -1,0 +1,6 @@
+.env
+.github
+.gitignore
+node_modules/
+README.md
+storage.json

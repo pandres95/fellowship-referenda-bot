@@ -34,7 +34,7 @@ export class MatrixBot {
   ) {
     const client = await this.auth.passwordLogin(username, password);
 
-    const storageProvider = new SimpleFsStorageProvider(this.paths.storage);
+    const storageProvider = new SimpleFsStorageProvider(this.paths.state);
     const cryptoProvider = new RustSdkCryptoStorageProvider(this.paths.crypto);
     this.client = new MatrixClient(
       client.homeserverUrl,

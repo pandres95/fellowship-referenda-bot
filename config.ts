@@ -9,8 +9,7 @@ export default {
     roomId: process.env.MATRIX_ROOMID,
 
     paths: {
-      storage:
-        process.env.MATRIX_STORAGE_PROVIDER_PATH ?? "./.matrix/storage.json",
+      state: process.env.MATRIX_STATE_PROVIDER_PATH ?? "./.matrix/state.json",
       crypto: process.env.MATRIX_CRYPTO_PROVIDER_PATH ?? "./.matrix/crypto",
     },
   },

@@ -10,6 +10,7 @@ export interface FellowshipReferendumOrigin {
 }
 
 export interface FellowshipReferendumCall {
+  inline: string;
   lookup: {
     hash: string;
     len: number;

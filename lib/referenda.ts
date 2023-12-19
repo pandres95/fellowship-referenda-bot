@@ -14,7 +14,9 @@ export async function getActiveReferenda(
     await api.query("fellowshipReferenda/referendumCount")
   ).toPrimitive() as number;
 
-  console.time("Fetching active referenda...");
+  console.time(
+    `Fetching referendum from ${earliestActiveReferendum} to ${referendumCount}`
+  );
   const referenda = await Promise.all(
     new Array(referendumCount - earliestActiveReferendum)
       .fill(0)
@@ -26,7 +28,9 @@ export async function getActiveReferenda(
         ),
       }))
   );
-  console.timeEnd("Fetching active referenda...");
+  console.timeEnd(
+    `Fetching referendum from ${earliestActiveReferendum} to ${referendumCount}`
+  );
 
   return referenda
     .filter(
@@ -46,29 +50,39 @@ export async function getMaybeReferendumCall(
 ) {
   const { proposal } = ref;
 
-  const hash = proposal.lookup.hash;
-
-  let len: number;
-  if (proposal.lookup.len === 0) {
-    const preimageStatus = await api.query("preimage/statusFor", hash);
-    len = (
-      preimageStatus.toJSON().valueOf() as { unrequested: { len: number } }
-    ).unrequested.len;
-  } else {
-    len = proposal.lookup.len;
-  }
-
-  const maybePreimage: Option<Vec<u8>> = await api.query(
-    "preimage/preimageFor",
-    [hash, len]
-  );
-
   let maybeExtrinsic: GenericCall | undefined;
-  if (maybePreimage.isSome) {
-    const preimage = maybePreimage.unwrap();
-    try {
-      maybeExtrinsic = await api.decodeCall(preimage.toString());
-    } catch {}
+  switch (true) {
+    case proposal.inline !== undefined: {
+      maybeExtrinsic = await api.decodeCall(proposal.inline);
+      break;
+    }
+    case proposal.lookup !== undefined: {
+      const hash = proposal.lookup.hash;
+
+      let len: number;
+      if (proposal.lookup.len === 0) {
+        const preimageStatus = await api.query("preimage/statusFor", hash);
+        len = (
+          preimageStatus.toJSON().valueOf() as { unrequested: { len: number } }
+        ).unrequested.len;
+      } else {
+        len = proposal.lookup.len;
+      }
+
+      const maybePreimage: Option<Vec<u8>> = await api.query(
+        "preimage/preimageFor",
+        [hash, len]
+      );
+
+      if (maybePreimage.isSome) {
+        const preimage = maybePreimage.unwrap();
+        try {
+          maybeExtrinsic = await api.decodeCall(preimage.toString());
+        } catch {}
+      }
+
+      break;
+    }
   }
 
   return maybeExtrinsic;

@@ -1,0 +1,24 @@
+name: Send digest (test)
+
+on:
+  schedule:
+    - cron: "0 0 * * 5"
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Enable Cache
+        uses: actions/cache@v3
+        with:
+          path: .matrix
+          key: fellowship-bot
+
+      - name: Dispatch Digest
+        uses: ./.github/referenda-bot/action.yml
+        with:
+          matrix-homeserver: ${{ vars.MATRIX_HOMESERVER_URL }}
+          matrix-username: ${{ vars.MATRIX_USERNAME }}
+          matrix-password: ${{ vars.MATRIX_PASSWORD }}
+          matrix-roomId: ${{ vars.MATRIX_ROOMID }}

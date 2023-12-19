@@ -1,0 +1,26 @@
+name: Send digest (test)
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    environment: testing
+    steps:
+      - name: Enable Cache
+        uses: actions/cache@v3
+        with:
+          path: .matrix
+          key: fellowship-bot
+
+      - name: Dispatch Digest
+        uses: ./.github/referenda-bot/action.yml
+        with:
+          matrix-homeserver: ${{ vars.MATRIX_HOMESERVER_URL }}
+          matrix-username: ${{ vars.MATRIX_USERNAME }}
+          matrix-password: ${{ vars.MATRIX_PASSWORD }}
+          matrix-roomId: ${{ vars.MATRIX_ROOMID }}

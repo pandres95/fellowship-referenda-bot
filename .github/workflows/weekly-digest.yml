@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Enable Cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v3
         with:
           path: .matrix
-          key: fellowship-bot
+          key: fellowship-test-bot
 
       - name: Dispatch Digest
-        uses: ./.github/referenda-bot
+        uses: ./.github/actions/referenda-bot
         with:
           matrix-homeserver: ${{ vars.MATRIX_HOMESERVER_URL }}
           matrix-username: ${{ vars.MATRIX_USERNAME }}

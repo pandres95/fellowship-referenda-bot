@@ -1,7 +1,7 @@
 # Container image that runs your code
 FROM node:21-alpine
 
-RUN mkdir /usr/src/app
+RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 

@@ -1,12 +1,12 @@
 # Fellowship Referenda Bot
 
+[![Send digest (test)](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/test-digest.yml/badge.svg)](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/test-digest.yml) [![Deployment Digest](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/deployment-digest.yml/badge.svg)](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/deployment-digest.yml) [![Weekly Digest](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/weekly-digest.yml/badge.svg)](https://github.com/pandres95/fellowship-referenda-bot/actions/workflows/weekly-digest.yml)
+
 ![Element](./assets/element-screenshot.png)
 
 This bot aims to publish a digest of the active referenda in the announcements channel of Polkadot Fellowswhip (and works with similar referenda-like systems).
 
-[Join here](https://matrix.to/#/#fellowship-rfcs:bloque.team)
-
-
+[![Notifications Channel - Join Here](https://img.shields.io/badge/Notifications_Channel-Join_Here-blue?style=for-the-badge)](https://matrix.to/#/#fellowship-rfcs:bloque.team)
 
 ## Usage
 

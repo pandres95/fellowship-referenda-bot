@@ -1,8 +1,8 @@
-name: Weekly Digest
+name: Deployment Digest
 
 on:
-  schedule:
-    - cron: "0 0 * * 5"
+  push:
+    branches: [main]
 
 jobs:
   digest:

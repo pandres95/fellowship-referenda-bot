@@ -3,6 +3,8 @@ import { SubstrateApi } from "./lib/substrate-api.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
 import { StorageHandler } from "./lib/storage.ts";
 import { getActiveReferenda, getMaybeReferendumCall } from "./lib/referenda.ts";
+import { GitHubApi } from "./lib/github-api.ts";
+import { extractRfcNumber } from "./lib/helpers.ts";
 
 const collectives = new SubstrateApi();
 await collectives.connect();
@@ -14,6 +16,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const subsquare = new SubsquareApi();
+const github = new GitHubApi();
 
 const storage = new StorageHandler();
 await storage.load();
@@ -52,8 +55,11 @@ const messages = await Promise.all(
   activeRfcReferenda.map(async ({ id, value: { tally }, rfcRemark }) => {
     const { title, content, commentsCount } =
       await subsquare.fellowshipReferendumById(id);
+    const { title: ghTitle } = await github.rfcPullRequestById(
+      extractRfcNumber(rfcRemark)
+    );
 
-    return `#### ${id}: ${title ?? rfcRemark}
+    return `#### ${id}: ${title ?? ghTitle}
 
 🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 

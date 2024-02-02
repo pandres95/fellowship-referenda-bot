@@ -77,3 +77,16 @@ export type SubsquareReferendumDetail = {
   };
   authors: string[];
 };
+
+export type GitHubResponse = {
+  url: string;
+  id: number;
+  number: number;
+  title: string;
+  user: GitHubUser;
+};
+
+export type GitHubUser = {
+  login: string;
+  avatar_url: string;
+};

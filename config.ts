@@ -21,6 +21,10 @@ export default {
     host: process.env.SUBSQUARE_HOST ?? "subsquare.io",
     chain: process.env.SUBSQUARE_CHAIN ?? "collectives",
   },
+  github: {
+    org: process.env.GITHUB_RFCS_ORG ?? "polkadot-fellows",
+    repo: process.env.GITHUB_RFCS_REPO ?? "rfcs",
+  },
   storage: {
     path: process.env.STORAGE_PATH ?? "./.storage.json",
   },

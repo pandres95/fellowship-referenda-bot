@@ -52,12 +52,16 @@ const messages = await Promise.all(
 
     return `#### ${id}: ${title}
 
-🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
+🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 
-${content
-  .split("\n")
-  .map((l) => `> ${l}`)
-  .join("\n")}
+${
+  content !== ""
+    ? content
+        .split("\n")
+        .map((l) => `> ${l}`)
+        .join("\n")
+    : "> No description"
+}
 
 **${tally.ayes} (${tally.bareAyes})** 👍 | **${
       tally.nays

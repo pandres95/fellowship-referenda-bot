@@ -3,6 +3,8 @@ import { SubstrateApi } from "./lib/substrate-api.ts";
 import { SubsquareApi } from "./lib/subsquare-api.ts";
 import { StorageHandler } from "./lib/storage.ts";
 import { getActiveReferenda, getMaybeReferendumCall } from "./lib/referenda.ts";
+import { GitHubApi } from "./lib/github-api.ts";
+import { extractRfcNumber } from "./lib/helpers.ts";
 
 const collectives = new SubstrateApi();
 await collectives.connect();
@@ -14,6 +16,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const subsquare = new SubsquareApi();
+const github = new GitHubApi();
 
 const storage = new StorageHandler();
 await storage.load();
@@ -39,6 +42,9 @@ const activeRfcReferenda = await Promise.all(
       id,
       value,
       isRfcReferendum,
+      rfcRemark: isRfcReferendum
+        ? maybeExtrinsic.args.at(0).toHuman().toString()
+        : undefined,
     };
   })
 ).then((referenda) => referenda.filter((ref) => ref.isRfcReferendum));
@@ -46,18 +52,30 @@ const activeRfcReferenda = await Promise.all(
 await storage.set("earliestActiveReferendum", activeReferenda?.[0]?.id ?? 0);
 
 const messages = await Promise.all(
-  activeRfcReferenda.map(async ({ id, value: { tally } }) => {
+  activeRfcReferenda.map(async ({ id, value: { tally }, rfcRemark }) => {
     const { title, content, commentsCount } =
       await subsquare.fellowshipReferendumById(id);
+    const {
+      html_url: ghUrl,
+      title: ghTitle,
+      body: ghDescription,
+    } = await github.rfcPullRequestById(extractRfcNumber(rfcRemark));
 
-    return `#### ${id}: ${title}
+    return `#### ${id}: ${title ?? ghTitle}
 
-🔗 [Link to post](https://collectives.subsquare.io/fellowship/referenda/${id})
+${
+  content?.length
+    ? content
+        .split("\n")
+        .map((l) => `> ${l}`)
+        .join("\n")
+    : ghDescription
+}
 
-${content
-  .split("\n")
-  .map((l) => `> ${l}`)
-  .join("\n")}
+##### Links 
+
+- 🔗 [Link to Pull Request](${ghUrl})
+- 🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 
 **${tally.ayes} (${tally.bareAyes})** 👍 | **${
       tally.nays

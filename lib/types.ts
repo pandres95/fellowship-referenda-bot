@@ -79,10 +79,12 @@ export type SubsquareReferendumDetail = {
 };
 
 export type GitHubResponse = {
-  url: string;
   id: number;
   number: number;
   title: string;
+  body: string;
+  url: string;
+  html_url: string;
   user: GitHubUser;
 };
 

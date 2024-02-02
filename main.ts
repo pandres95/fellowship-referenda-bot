@@ -55,13 +55,13 @@ const messages = await Promise.all(
   activeRfcReferenda.map(async ({ id, value: { tally }, rfcRemark }) => {
     const { title, content, commentsCount } =
       await subsquare.fellowshipReferendumById(id);
-    const { title: ghTitle } = await github.rfcPullRequestById(
-      extractRfcNumber(rfcRemark)
-    );
+    const {
+      html_url: ghUrl,
+      title: ghTitle,
+      body: ghDescription,
+    } = await github.rfcPullRequestById(extractRfcNumber(rfcRemark));
 
     return `#### ${id}: ${title ?? ghTitle}
-
-🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 
 ${
   content?.length
@@ -69,8 +69,13 @@ ${
         .split("\n")
         .map((l) => `> ${l}`)
         .join("\n")
-    : "> No description"
+    : ghDescription
 }
+
+##### Links 
+
+- 🔗 [Link to Pull Request](${ghUrl})
+- 🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 
 **${tally.ayes} (${tally.bareAyes})** 👍 | **${
       tally.nays

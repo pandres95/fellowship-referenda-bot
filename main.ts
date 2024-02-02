@@ -55,7 +55,7 @@ const messages = await Promise.all(
 🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 
 ${
-  content !== ""
+  content?.length
     ? content
         .split("\n")
         .map((l) => `> ${l}`)

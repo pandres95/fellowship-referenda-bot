@@ -39,6 +39,9 @@ const activeRfcReferenda = await Promise.all(
       id,
       value,
       isRfcReferendum,
+      rfcRemark: isRfcReferendum
+        ? maybeExtrinsic.args.at(0).toHuman().toString()
+        : undefined,
     };
   })
 ).then((referenda) => referenda.filter((ref) => ref.isRfcReferendum));
@@ -46,11 +49,11 @@ const activeRfcReferenda = await Promise.all(
 await storage.set("earliestActiveReferendum", activeReferenda?.[0]?.id ?? 0);
 
 const messages = await Promise.all(
-  activeRfcReferenda.map(async ({ id, value: { tally } }) => {
+  activeRfcReferenda.map(async ({ id, value: { tally }, rfcRemark }) => {
     const { title, content, commentsCount } =
       await subsquare.fellowshipReferendumById(id);
 
-    return `#### ${id}: ${title}
+    return `#### ${id}: ${title ?? rfcRemark}
 
 🔗 Link to post: [Subsquare](https://collectives.subsquare.io/fellowship/referenda/${id}) | [Polkassembly](https://collectives.polkassembly.io/referenda/${id}?network=collectives)
 

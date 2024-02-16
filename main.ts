@@ -63,14 +63,10 @@ const messages = await Promise.all(
 
     return `#### ${id}: ${title ?? ghTitle}
 
-${
-  content?.length
-    ? content
-        .split("\n")
-        .map((l) => `> ${l}`)
-        .join("\n")
-    : ghDescription
-}
+${(content?.length ? content : ghDescription)
+  .split("\n")
+  .map((l) => `> ${l}`)
+  .join("\n")}
 
 ##### Links 
 
